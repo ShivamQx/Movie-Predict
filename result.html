@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recommendations for {{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .movie-card img {
+      height: 350px;
+      object-fit: cover;
+    }
+    .movie-card {
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .movie-card:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body class="bg-dark text-light">
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">Recommended Movies for <span class="text-warning">{{ title }}</span></h2>
+
+    <div class="row">
+      {% if recs %}
+        {% for rec in recs %}
+          <div class="col-md-3 mb-4">
+            <div class="card bg-secondary text-light h-100 movie-card" onclick="location.href='/'">
+              <img id="poster-{{ loop.index }}" src="https://via.placeholder.com/300x450?text=Loading..." class="card-img-top" alt="{{ rec.title }}">
+              <div class="card-body text-center">
+                <h6 class="card-title">{{ rec.title }}</h6>
+                <p class="card-text">{{ rec.genre }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center">❌ Movie not found in dataset.</p>
+      {% endif %}
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="/" class="btn btn-outline-light">🔙 Back</a>
+    </div>
+  </div>
+
+  <script>
+    const TMDB_API_KEY = "9d331a1ad5679735129b6463b7feaad0";
+    const TMDB_SEARCH_URL = "https://api.themoviedb.org/3/search/movie";
+    const TMDB_IMG_BASE = "https://image.tmdb.org/t/p/w500";
+
+    {% for rec in recs %}
+      fetch(`${TMDB_SEARCH_URL}?api_key=${TMDB_API_KEY}&query={{ rec.title | urlencode }}`)
+        .then(res => res.json())
+        .then(data => {
+          if(data.results && data.results[0] && data.results[0].poster_path){
+            document.getElementById("poster-{{ loop.index }}").src = TMDB_IMG_BASE + data.results[0].poster_path;
+          }
+        })
+        .catch(err => console.log("TMDB fetch error:", err));
+    {% endfor %}
+  </script>
+</body>
+</html>
