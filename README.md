@@ -20,7 +20,7 @@ It recommends movies similar to a user-provided movie title using **TF-IDF (Term
 
 ---
 
-## 📂 Dataset  
+## 📂 Dataset Requirement
 This project uses the [TMDB 5000 Movies Dataset](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata).  
 Download `tmdb_5000_movies.csv` and place it in the project folder.  
 
